@@ -1,6 +1,5 @@
-package com.pk4us.weatherapp.fragment
+package com.pk4us.weatherapp.fragments
 
-import android.content.Context
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat

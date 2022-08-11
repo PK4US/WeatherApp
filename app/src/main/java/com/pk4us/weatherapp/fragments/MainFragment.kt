@@ -1,4 +1,4 @@
-package com.pk4us.weatherapp.fragment
+package com.pk4us.weatherapp.fragments
 
 import android.Manifest
 import android.os.Bundle
@@ -9,8 +9,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import com.pk4us.weatherapp.R
-import com.pk4us.weatherapp.databinding.ActivityMainBinding
 import com.pk4us.weatherapp.databinding.FragmentMainBinding
 
 class MainFragment : Fragment() {

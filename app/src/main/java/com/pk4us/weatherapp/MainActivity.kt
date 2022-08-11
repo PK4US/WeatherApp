@@ -3,7 +3,7 @@ package com.pk4us.weatherapp
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.pk4us.weatherapp.databinding.ActivityMainBinding
-import com.pk4us.weatherapp.fragment.MainFragment
+import com.pk4us.weatherapp.fragments.MainFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
