@@ -17,7 +17,9 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.material.tabs.TabLayoutMediator
 import com.pk4us.weatherapp.adapters.VpAdapter
+import com.pk4us.weatherapp.adapters.WeatherModel
 import com.pk4us.weatherapp.databinding.FragmentMainBinding
+import org.json.JSONObject
 
 const val API_KEY = "3442427ab7b944acb4892702221108"
 
@@ -26,7 +28,6 @@ class MainFragment : Fragment() {
         HoursFragment.newInstance(),
         DaysFragment.newInstance()
     )
-
     private val tList = listOf(
         "Hours",
         "Days"
@@ -34,52 +35,85 @@ class MainFragment : Fragment() {
     private lateinit var pLauncher: ActivityResultLauncher<String>
     private lateinit var binding: FragmentMainBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        chekPermission()
+        checkPermission()
         init()
         requestWeatherData("London")
     }
 
     private fun init() = with(binding){
-        val adapter = VpAdapter(activity as FragmentActivity,fList)
+        val adapter = VpAdapter(activity as FragmentActivity, fList)
         vp.adapter = adapter
-        TabLayoutMediator(tabLayout,vp){
-            tab,pos -> tab.text = tList[pos]
+        TabLayoutMediator(tabLayout, vp){
+                tab, pos -> tab.text = tList[pos]
         }.attach()
+
     }
 
     private fun permissionListener(){
-        pLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){
-            Toast.makeText(activity,"Permission is $it",Toast.LENGTH_SHORT).show()
+        pLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()){
+            Toast.makeText(activity, "Permission is $it", Toast.LENGTH_LONG).show()
         }
     }
 
-    private fun chekPermission(){
-        if (!isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION)){
+    private fun checkPermission(){
+        if(!isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION)){
             permissionListener()
             pLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
 
-    private fun requestWeatherData(city:String){
+    private fun requestWeatherData(city: String){
         val url = "https://api.weatherapi.com/v1/forecast.json?key=" +
-                API_KEY+
+                API_KEY +
                 "&q=" +
                 city +
                 "&days=" +
                 "3" +
                 "&aqi=no&alerts=no"
         val queue = Volley.newRequestQueue(context)
-        val request = StringRequest(Request.Method.GET,url,{
-                result -> Log.d("MyLog","result: $result")}, {
-                error -> Log.d("MyLog","error: $error")})
+        val request = StringRequest(
+            Request.Method.GET,
+            url,
+            {
+                    result -> parseWeatherData(result)
+            },
+            {
+                    error -> Log.d("MyLog", "Error: $error")
+            }
+        )
         queue.add(request)
+    }
+
+    private fun parseWeatherData(result: String) {
+        val mainObject = JSONObject(result)
+        val item = WeatherModel(
+            mainObject.getJSONObject("location").getString("name"),
+            mainObject.getJSONObject("current").getString("last_updated"),
+            mainObject.getJSONObject("current")
+                .getJSONObject("condition").getString("text"),
+            mainObject.getJSONObject("current").getString("temp_c"),
+            "",
+            "",
+            mainObject.getJSONObject("current")
+                .getJSONObject("condition").getString("icon"),
+            ""
+        )
+        Log.d("MyLog", "City: ${item.city}")
+        Log.d("MyLog", "Time: ${item.time}")
+        Log.d("MyLog", "Condition: ${item.condition}")
+        Log.d("MyLog", "Temp: ${item.currentTemp}")
+        Log.d("MyLog", "Url: ${item.imageUrl}")
     }
 
     companion object {
