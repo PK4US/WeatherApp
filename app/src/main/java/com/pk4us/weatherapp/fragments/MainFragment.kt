@@ -21,6 +21,7 @@ import com.pk4us.weatherapp.MainViewModel
 import com.pk4us.weatherapp.adapters.VpAdapter
 import com.pk4us.weatherapp.adapters.WeatherModel
 import com.pk4us.weatherapp.databinding.FragmentMainBinding
+import com.squareup.picasso.Picasso
 import org.json.JSONObject
 
 const val API_KEY = "3442427ab7b944acb4892702221108"
@@ -50,6 +51,7 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         checkPermission()
         init()
+        updateCurrentCard()
         requestWeatherData("Berlin")
     }
 
@@ -60,6 +62,18 @@ class MainFragment : Fragment() {
                 tab, pos -> tab.text = tList[pos]
         }.attach()
 
+    }
+
+    private fun updateCurrentCard() = with(binding){
+        model.liveDataCurrent.observe(viewLifecycleOwner){item ->
+            val maxMinTemp = "${item.maxTemp}°C /${item.minTemp}°C"
+            tvDate.text = item.time
+            tvCity.text = item.city
+            tvCurrentTemp.text = item.currentTemp
+            tvMaxMin.text = maxMinTemp
+            Picasso.get().load("https:" + item.imageUrl).into(imWeather)
+
+        }
     }
 
     private fun permissionListener(){
