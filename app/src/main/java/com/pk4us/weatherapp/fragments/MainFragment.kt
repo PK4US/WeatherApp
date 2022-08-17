@@ -12,10 +12,12 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.activityViewModels
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.material.tabs.TabLayoutMediator
+import com.pk4us.weatherapp.MainViewModel
 import com.pk4us.weatherapp.adapters.VpAdapter
 import com.pk4us.weatherapp.adapters.WeatherModel
 import com.pk4us.weatherapp.databinding.FragmentMainBinding
@@ -34,6 +36,7 @@ class MainFragment : Fragment() {
     )
     private lateinit var pLauncher: ActivityResultLauncher<String>
     private lateinit var binding: FragmentMainBinding
+    private val model: MainViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -138,9 +141,7 @@ class MainFragment : Fragment() {
                 .getJSONObject("condition").getString("icon"),
             weatherItem.hours
         )
-        Log.d("MyLog", "maxTemp: ${item.maxTemp}")
-        Log.d("MyLog", "minTemp: ${item.minTemp}")
-        Log.d("MyLog", "Time: ${item.hours}")
+        model.liveDataCurrent.value = item
     }
 
     companion object {

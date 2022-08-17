@@ -1,3 +1,5 @@
+package com.pk4us.weatherapp.adapters
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -5,8 +7,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.pk4us.weatherapp.R
-import com.pk4us.weatherapp.adapters.WeatherModel
 import com.pk4us.weatherapp.databinding.ListItemBinding
+import com.squareup.picasso.Picasso
 
 
 class WeatherAdapter : ListAdapter<WeatherModel, WeatherAdapter.Holder>(Comparator()) {
@@ -18,6 +20,7 @@ class WeatherAdapter : ListAdapter<WeatherModel, WeatherAdapter.Holder>(Comparat
             tvDate.text = item.time
             tvCondition.text = item.condition
             tvTemp.text = item.currentTemp
+            Picasso.get().load("https:" + item.imageUrl).into(im)
         }
     }
 
